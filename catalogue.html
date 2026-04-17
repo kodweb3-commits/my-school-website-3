@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Book Catalogue — Sky-High Library</title>
+<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --green-900:#0a2e1a;--green-800:#133d24;--green-700:#1a5c35;--green-600:#217a46;
+  --green-500:#28a057;--green-400:#3dbf70;--green-300:#72d49a;--green-200:#b3e8c8;
+ 
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark);line-height:1.6;overflow-x:hidden;}
+img{max-width:100%;display:block;}a{text-decoration:none;color:inherit;}ul{list-style:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(40,160,87,.12);transition:var(--transition);}
+nav.scrolled{box-shadow:var(--shadow-md);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-height);width:92%;max-width:1200px;margin:0 auto;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--green-600),var(--green-400));border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;box-shadow:0 4px 12px rgba(40,160,87,.3);}
+.nav-logo-text strong{display:block;font-size:1.05rem;color:var(--green-900);font-weight:700;font-family:'Playfair Display',serif;}
+.nav-logo-text span{display:block;font-size:.7rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-links a{padding:8px 14px;border-radius:8px;font-size:.9rem;font-weight:500;color:var(--text-mid);transition:var(--transition);}
+.nav-links a:hover,.nav-links a.active{background:var(--green-100);color:var(--green-700);}
+.nav-cta{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;background:var(--green-600);color:white;border-radius:100px;font-weight:600;font-size:.88rem;transition:var(--transition);}
+.nav-cta:hover{background:var(--green-700);transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:8px;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--green-700);border-radius:2px;transition:var(--transition);}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-nav{display:none;position:fixed;top:var(--nav-height);left:0;right:0;background:white;z-index:999;padding:20px 24px 32px;box-shadow:var(--shadow-lg);border-top:2px solid var(--green-100);}
+.mobile-nav.visible{display:block;}
+.mobile-nav a{display:block;padding:13px 0;font-size:1rem;font-weight:500;color:var(--text-mid);border-bottom:1px solid var(--green-50);transition:var(--transition);}
+.mobile-nav a:hover{color:var(--green-600);}
+
+/* PAGE HERO */
+.page-hero{
+  padding-top:var(--nav-height);
+  background:linear-gradient(160deg,rgba(10,46,26,.90) 0%,rgba(19,61,36,.75) 60%,rgba(10,46,26,.88) 100%),
+    url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1600&q=80') center/cover no-repeat;
+  min-height:380px;display:flex;align-items:flex-end;position:relative;overflow:hidden;
+}
+.page-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,var(--off-white));}
+.page-hero-inner{width:92%;max-width:1200px;margin:0 auto;padding:56px 0 80px;position:relative;z-index:1;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:18px;}
+.breadcrumb a{color:rgba(255,255,255,.55);transition:var(--transition);}
+.breadcrumb a:hover{color:var(--green-300);}
+.breadcrumb i{font-size:.65rem;}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:white;margin-bottom:10px;}
+.page-hero h1 span{color:var(--green-300);}
+.page-hero p{font-size:1rem;color:rgba(255,255,255,.65);max-width:480px;}
+
+/* UTIL */
+.container{width:92%;max-width:1200px;margin:0 auto;}
+.section-tag{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green-600);background:var(--green-100);border-radius:100px;padding:6px 14px;margin-bottom:16px;}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:.1s;}
+
+/* CATALOGUE BODY */
+.cat-body{padding:56px 0 96px;}
+
+/* SIDEBAR + GRID LAYOUT */
+.cat-layout{display:grid;grid-template-columns:260px 1fr;gap:36px;align-items:start;}
+
+/* SIDEBAR */
+.sidebar{background:var(--white);border-radius:var(--radius-md);padding:24px;box-shadow:var(--shadow-sm);border:1px solid rgba(40,160,87,.08);position:sticky;top:calc(var(--nav-height)+20px);}
+.sidebar-section{margin-bottom:28px;}
+.sidebar-section:last-child{margin-bottom:0;}
+.sidebar-title{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
+.cat-chip{display:block;width:100%;padding:10px 14px;border-radius:8px;font-size:.88rem;font-weight:500;color:var(--text-mid);cursor:pointer;background:none;border:none;text-align:left;transition:var(--transition);font-family:'DM Sans',sans-serif;}
+.cat-chip:hover{background:var(--green-50);color:var(--green-700);}
+.cat-chip.active{background:var(--green-600);color:white;}
+.cat-chip .chip-count{float:right;font-size:.75rem;opacity:.7;}
+.sort-select{width:100%;padding:10px 12px;border:2px solid var(--green-200);border-radius:8px;font-size:.88rem;color:var(--text-dark);background:var(--white);outline:none;transition:var(--transition);font-family:'DM Sans',sans-serif;}
+.sort-select:focus{border-color:var(--green-500);}
+
+/* MAIN CONTENT */
+.cat-main {
+.cat-toolbar{display:flex;gap:12px;align-items:center;margin-bottom:28px;flex-wrap:wrap;}
+.search-bar{flex:1;min-width:200px;position:relative;}
+.search-bar i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);}
+.search-bar input{width:100%;padding:12px 14px 12px 42px;border:2px solid var(--green-200);border-radius:100px;background:var(--white);font-size:.92rem;color:var(--text-dark);outline:none;transition:var(--transition);font-family:'DM Sans',sans-serif;}
+.search-bar input:focus{border-color:var(--green-500);box-shadow:0 0 0 4px rgba(40,160,87,.1);}
+.results-info{font-size:.85rem;color:var(--text-muted);white-space:nowrap;}
+.view-toggle{display:flex;border:2px solid var(--green-200);border-radius:8px;overflow:hidden;}
+.view-btn{padding:9px 12px;background:none;border:none;cursor:pointer;color:var(--text-muted);transition:var(--transition);font-size:.9rem;}
+.view-btn.active{background:var(--green-600);color:white;} }
+
+/* GRID VIEW */
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:20px;}
+.book-card{background:var(--white);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm);transition:var(--transition);cursor:pointer;border:1px solid rgba(40,160,87,.07);}
+.book-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+.book-cover{position:relative;padding-top:140%;overflow:hidden;background:var(--green-100);}
+.book-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.book-card:hover .book-cover img{transform:scale(1.07);}
+.book-cat-badge{position:absolute;top:8px;left:8px;background:rgba(255,255,255,.95);font-size:.68rem;font-weight:700;color:var(--green-700);padding:3px 9px;border-radius:100px;letter-spacing:.05em;text-transform:uppercase;}
+.book-info{padding:14px;}
+.book-info h4{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:700;color:var(--green-900);margin-bottom:4px;line-height:1.3;}
+.book-info .author{font-size:.78rem;color:var(--text-muted);font-weight:500;}
+.book-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.book-rating{display:flex;align-items:center;gap:3px;font-size:.75rem;color:var(--gold);font-weight:600;}
+.book-year{font-size:.72rem;color:var(--text-muted);}
+
+/* LIST VIEW */
+.books-list{display:flex;flex-direction:column;gap:14px;}
+.list-card{background:var(--white);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm);transition:var(--transition);border:1px solid rgba(40,160,87,.07);display:flex;gap:0;}
+.list-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.list-cover{width:80px;flex-shrink:0;overflow:hidden;}
+.list-cover img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.list-card:hover .list-cover img{transform:scale(1.07);}
+.list-info{padding:16px;flex:1;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.list-info h4{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--green-900);flex:1;min-width:150px;}
+.list-info .author{font-size:.85rem;color:var(--text-muted);min-width:140px;}
+.list-badge{background:var(--green-100);color:var(--green-700);font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase;}
+.list-rating{font-size:.78rem;color:var(--gold);font-weight:600;white-space:nowrap;}
+.list-year{font-size:.78rem;color:var(--text-muted);white-space:nowrap;}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:72px 20px;color:var(--text-muted);}
+.no-results i{font-size:3rem;color:var(--green-200);display:block;margin-bottom:14px;}
+.no-results p{font-size:1rem;}
+
+/* PAGINATION */
+.pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:48px;}
+.page-btn{width:40px;height:40px;border-radius:8px;border:2px solid var(--green-200);background:var(--white);color:var(--text-mid);font-size:.88rem;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;}
+.page-btn:hover{background:var(--green-100);border-color:var(--green-300);}
+.page-btn.active{background:var(--green-600);color:white;border-color:var(--green-600);}
+
+/* FOOTER */
+footer{background:var(--green-900);padding:36px 0 28px;}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+footer p{font-size:.82rem;color:rgba(255,255,255,.35);}
+footer a{color:var(--green-400);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:.82rem;color:rgba(255,255,255,.4);transition:var(--transition);}
+.footer-links a:hover{color:var(--green-300);}
+
+@media(max-width:900px){.cat-layout{grid-template-columns:1fr;}.sidebar{position:static;display:flex;flex-wrap:wrap;gap:20px;}.sidebar-section{margin-bottom:0;flex:1;min-width:160px;}}
+@media(max-width:768px){.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}.books-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));}}
+@media(max-width:480px){.books-grid{grid-template-columns:1fr 1fr;}.cat-toolbar{flex-direction:column;align-items:stretch;}}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+      <div class="nav-logo-text"><strong>Sky-High Library</strong><span>Est. 2008 · Lagos</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="catalogue.html"class="active">Catalogue</a>
+      <a href="collection.html">Collection</a>
+      <a href="features.html">Features</a>
+      <a href="service.html">Service</a>
+      <a href="contact.hmtl">Contact</a>
+    </div>
+    <a href="sky-high-library.html#register" class="nav-cta"><i class="fa-solid fa-user-plus"></i> Catalogue your book here</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#about">About</a>
+  <a href="#catalogue">Catalogue</a>
+  <a href="#collection">Collection</a>
+  <a href="#features">Features</a>
+  <a href="#service">Service</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><i class="fa-solid fa-chevron-right"></i><span>Catalogue</span>
+    </div>
+    <h1>Book <span>Catalogue</span></h1>
+    <p>Browse over 80,000 titles across science, art, commerce, history, and more.</p>
+  </div>
+</section>
+
+<div class="cat-body">
+  <div class="container">
+    <div class="cat-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar reveal">
+        <div class="sidebar-section">
+          <div class="sidebar-title">Categories</div>
+          <button class="cat-chip active" data-cat="all">All Books <span class="chip-count">25</span></button>
+          <button class="cat-chip" data-cat="Science">Science <span class="chip-count">5</span></button>
+          <button class="cat-chip" data-cat="Art">Art <span class="chip-count">5</span></button>
+          <button class="cat-chip" data-cat="Commercial">Business <span class="chip-count">5</span></button>
+          <button class="cat-chip" data-cat="History">History <span class="chip-count">5</span></button>
+          <button class="cat-chip" data-cat="Fiction">Fiction <span class="chip-count">5</span></button>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Sort By</div>
+          <select class="sort-select" id="sortSelect">
+            <option value="default">Default</option>
+            <option value="rating">Highest Rated</option>
+            <option value="year-new">Newest First</option>
+            <option value="year-old">Oldest First</option>
+            <option value="title">A – Z</option>
+          </select>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="cat-main reveal reveal-delay-1">
+        <div class="cat-toolbar">
+          <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search title or author…"/>
+          </div>
+          <span class="results-info" id="resultsInfo">25 books</span>
+          <div class="view-toggle">
+            <button class="view-btn active" id="viewGrid" title="Grid view"><i class="fa-solid fa-grip"></i></button>
+            <button class="view-btn" id="viewList" title="List view"><i class="fa-solid fa-list"></i></button>
+          </div>
+        </div>
+        <div id="booksContainer"></div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <p>© 2025 <a href="index.html">Sky-High Library</a>. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="collection.html">Collections</a><a href="sky-high-library.html#contact">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const BOOKS = [
+  {id:2,title:"The Selfish Gene",author:"Richard Dawkins",cat:"Science",year:1976,rating:4.6,cover:"https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&q=70"},
+  {id:3,title:"Cosmos",author:"Carl Sagan",cat:"Science",year:1980,rating:4.9,cover:"https://images.unsplash.com/photo-1462332420958-a05d1e002413?w=300&q=70"},
+  {id:4,title:"The Gene: An Intimate History",author:"Siddhartha Mukherjee",cat:"Science",year:2016,rating:4.7,cover:"https://images.unsplash.com/photo-1576671081837-49000212a370?w=300&q=70"},
+  {id:5,title:"Astrophysics for People in a Hurry",author:"Neil deGrasse Tyson",cat:"Science",year:2017,rating:4.5,cover:"https://images.unsplash.com/photo-1610296669228-602fa827fc1f?w=300&q=70"},
+  {id:6,title:"The Story of Art",author:"E.H. Gombrich",cat:"Art",year:1950,rating:4.8,cover:"https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&q=70"},
+  {id:8,title:"The Shock of the New",author:"Robert Hughes",cat:"Art",year:1980,rating:4.5,cover:"https://images.unsplash.com/photo-1569091791842-7cfb64e04797?w=300&q=70"},
+  {id:9,title:"Art: A World History",author:"Dorling Kindersley",cat:"Art",year:1997,rating:4.4,cover:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=70"},
+  {id:11,title:"Rich Dad Poor Dad",author:"Robert Kiyosaki",cat:"Commercial",year:1997,rating:4.5,cover:"https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&q=70"},
+  {id:12,title:"The Lean Startup",author:"Eric Ries",cat:"Commercial",year:2011,rating:4.6,cover:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=70"},
+  {id:13,title:"Zero to One",author:"Peter Thiel",cat:"Commercial",year:2014,rating:4.7,cover:"https://images.unsplash.com/photo-1518893494013-481c1d8ed3fd?w=300&q=70"},
+  {id:14,title:"Good to Great",author:"Jim Collins",cat:"Commercial",year:2001,rating:4.6,cover:"https://images.unsplash.com/photo-1463947628408-f8581a2f4aca?w=300&q=70"},
+  {id:15,title:"Atomic Habits",author:"James Clear",cat:"Commercial",year:2018,rating:4.9,cover:"https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=300&q=70"},
+  {id:16,title:"Sapiens",author:"Yuval Noah Harari",cat:"History",year:2011,rating:4.9,cover:"https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=300&q=70"},
+  {id:17,title:"Guns, Germs & Steel",author:"Jared Diamond",cat:"History",year:1997,rating:4.6,cover:"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=70"},
+  {id:18,title:"The Silk Roads",author:"Peter Frankopan",cat:"History",year:2015,rating:4.5,cover:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=70"},
+  {id:19,title:"1776",author:"David McCullough",cat:"History",year:2005,rating:4.4,cover:"https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&q=70"},
+  {id:20,title:"The Autobiography of Malcolm X",author:"Alex Haley",cat:"History",year:1965,rating:4.8,cover:"https://images.unsplash.com/photo-1448375240586-882707db888b?w=300&q=70"},
+  {id:21,title:"Things Fall Apart",author:"Chinua Achebe",cat:"Fiction",year:1958,rating:4.9,cover:"https://images.unsplash.com/photo-1610116306796-6fea9f4fae38?w=300&q=70"},
+  {id:22,title:"The Alchemist",author:"Paulo Coelho",cat:"Fiction",year:1988,rating:4.8,cover:"https://images.unsplash.com/photo-1544716278-e513176f20b5?w=300&q=70"},
+  {id:23,title:"Purple Hibiscus",author:"Chimamanda Ngozi Adichie",cat:"Fiction",year:2003,rating:4.7,cover:"https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300&q=70"},
+  {id:24,title:"Half of a Yellow Sun",author:"Chimamanda Ngozi Adichie",cat:"Fiction",year:2006,rating:4.8,cover:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&q=70"},
+  {id:25,title:"Season of Migration to the North",author:"Tayeb Salih",cat:"Fiction",year:1966,rating:4.6,cover:"https://images.unsplash.com/photo-1495640388908-05fa85288e61?w=300&q=70"},
+];
+
+const PER_PAGE=12;
+let currentCat='all', searchQ='', sortBy='default', viewMode='grid', currentPage=1;
+
+function stars(r){let s='';for(let i=1;i<=5;i++)s+=`<i class="fa-${i<=Math.floor(r)?'solid':'regular'} fa-star"></i>`;return s;}
+
+function getFiltered(){
+  let list=[...BOOKS];
+  if(currentCat!=='all')list=list.filter(b=>b.cat===currentCat);
+  if(searchQ){const q=searchQ.toLowerCase();list=list.filter(b=>b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q));}
+  if(sortBy==='rating')list.sort((a,b)=>b.rating-a.rating);
+  else if(sortBy==='year-new')list.sort((a,b)=>b.year-a.year);
+  else if(sortBy==='year-old')list.sort((a,b)=>a.year-b.year);
+  else if(sortBy==='title')list.sort((a,b)=>a.title.localeCompare(b.title));
+  return list;
+}
+
+function render(){
+  const list=getFiltered();
+  const total=list.length;
+  const totalPages=Math.ceil(total/PER_PAGE);
+  if(currentPage>totalPages)currentPage=1;
+  const slice=list.slice((currentPage-1)*PER_PAGE,currentPage*PER_PAGE);
+  document.getElementById('resultsInfo').textContent=`${total} book${total!==1?'s':''}`;
+  const cont=document.getElementById('booksContainer');
+  if(!slice.length){
+    cont.innerHTML='<div class="no-results"><i class="fa-solid fa-book-open"></i><p>No books found. Try a different search or filter.</p></div>';
+    document.getElementById('pagination').innerHTML='';return;
+  }
+  if(viewMode==='grid'){
+    cont.className='books-grid';
+    cont.innerHTML=slice.map(b=>`
+      <div class="book-card">
+        <div class="book-cover"><img src="${b.cover}" alt="${b.title}" loading="lazy"/><span class="book-cat-badge">${b.cat}</span></div>
+        <div class="book-info">
+          <h4>${b.title}</h4><p class="author">${b.author}</p>
+          <div class="book-meta"><span class="book-rating">${stars(b.rating)} ${b.rating}</span><span class="book-year">${b.year}</span></div>
+        </div>
+      </div>`).join('');
+  } else {
+    cont.className='books-list';
+    cont.innerHTML=slice.map(b=>`
+      <div class="list-card">
+        <div class="list-cover"><img src="${b.cover}" alt="${b.title}" loading="lazy"/></div>
+        <div class="list-info">
+          <h4>${b.title}</h4>
+          <span class="author">${b.author}</span>
+          <span class="list-badge">${b.cat}</span>
+          <span class="list-rating">${stars(b.rating)} ${b.rating}</span>
+          <span class="list-year">${b.year}</span>
+        </div>
+      </div>`).join('');
+  }
+  // Pagination
+  const pg=document.getElementById('pagination');
+  if(totalPages<=1){pg.innerHTML='';return;}
+  let html='';
+  if(currentPage>1)html+=`<button class="page-btn" onclick="goPage(${currentPage-1})"><i class="fa-solid fa-chevron-left"></i></button>`;
+  for(let i=1;i<=totalPages;i++)html+=`<button class="page-btn${i===currentPage?' active':''}" onclick="goPage(${i})">${i}</button>`;
+  if(currentPage<totalPages)html+=`<button class="page-btn" onclick="goPage(${currentPage+1})"><i class="fa-solid fa-chevron-right"></i></button>`;
+  pg.innerHTML=html;
+}
+function goPage(n){currentPage=n;render();window.scrollTo({top:300,behavior:'smooth'});}
+
+document.getElementById('searchInput').addEventListener('input',e=>{searchQ=e.target.value;currentPage=1;render();});
+document.querySelectorAll('.cat-chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.cat-chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');currentCat=c.dataset.cat;currentPage=1;render();}));
+document.getElementById('sortSelect').addEventListener('change',e=>{sortBy=e.target.value;render();});
+document.getElementById('viewGrid').addEventListener('click',()=>{viewMode='grid';document.getElementById('viewGrid').classList.add('active');document.getElementById('viewList').classList.remove('active');render();});
+document.getElementById('viewList').addEventListener('click',()=>{viewMode='list';document.getElementById('viewList').classList.add('active');document.getElementById('viewGrid').classList.remove('active');render();});
+
+render();
+
+// Nav + reveal
+const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
+const hb=document.getElementById('hamburger'),mn=document.getElementById('mobile-nav');
+hb.addEventListener('click',()=>{hb.classList.toggle('open');mn.classList.toggle('visible');});
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

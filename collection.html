@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+<title>Collections — Sky-High Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --green-900:#0a2e1a;--green-800:#133d24;--green-700:#1a5c35;--green-600:#217a46;
+  --green-500:#28a057;--green-400:#3dbf70;--green-300:#72d49a;--green-200:#b3e8c8;
+ 
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark);line-height:1.6;overflow-x:hidden;}
+img{max-width:100%;display:block;}a{text-decoration:none;color:inherit;}ul{list-style:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(40,160,87,.12);transition:var(--transition);}
+nav.scrolled{box-shadow:var(--shadow-md);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-height);width:92%;max-width:1200px;margin:0 auto;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--green-600),var(--green-400));border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;box-shadow:0 4px 12px rgba(40,160,87,.3);}
+.nav-logo-text strong{display:block;font-size:1.05rem;color:var(--green-900);font-weight:700;font-family:'Playfair Display',serif;}
+.nav-logo-text span{display:block;font-size:.7rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-links a{padding:8px 14px;border-radius:8px;font-size:.9rem;font-weight:500;color:var(--text-mid);transition:var(--transition);}
+.nav-links a:hover,.nav-links a.active{background:var(--green-100);color:var(--green-700);}
+.nav-cta{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;background:var(--green-600);color:white;border-radius:100px;font-weight:600;font-size:.88rem;transition:var(--transition);}
+.nav-cta:hover{background:var(--green-700);transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:8px;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--green-700);border-radius:2px;transition:var(--transition);}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-nav{display:none;position:fixed;top:var(--nav-height);left:0;right:0;background:white;z-index:999;padding:20px 24px 32px;box-shadow:var(--shadow-lg);border-top:2px solid var(--green-100);}
+.mobile-nav.visible{display:block;}
+.mobile-nav a{display:block;padding:13px 0;font-size:1rem;font-weight:500;color:var(--text-mid);border-bottom:1px solid var(--green-50);transition:var(--transition);}
+.mobile-nav a:hover{color:var(--green-600);}
+
+/* PAGE HERO — dark */
+.page-hero{
+  padding-top:var(--nav-height);
+  background:linear-gradient(160deg,rgba(10,46,26,.92) 0%,rgba(19,61,36,.78) 55%,rgba(10,46,26,.90) 100%),
+    url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1600&q=80') center/cover no-repeat;
+  min-height:400px;display:flex;align-items:flex-end;position:relative;overflow:hidden;
+}
+.page-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,var(--off-white));}
+.page-hero-inner{width:92%;max-width:1200px;margin:0 auto;padding:56px 0 80px;position:relative;z-index:1;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:18px;}
+.breadcrumb a{color:rgba(255,255,255,.55);transition:var(--transition);}
+.breadcrumb a:hover{color:var(--green-300);}
+.breadcrumb i{font-size:.65rem;}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:white;margin-bottom:10px;}
+.page-hero h1 span{color:var(--green-300);}
+.page-hero p{font-size:1rem;color:rgba(255,255,255,.65);max-width:520px;line-height:1.7;}
+
+/* UTIL */
+.container{width:92%;max-width:1200px;margin:0 auto;}
+.section{padding:88px 0;}
+.section-tag{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green-600);background:var(--green-100);border-radius:100px;padding:6px 14px;margin-bottom:16px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.7rem);font-weight:700;color:var(--green-900);line-height:1.2;margin-bottom:14px;}
+.section-subtitle{font-size:1.05rem;color:var(--text-light);max-width:580px;line-height:1.75;}
+.divider{width:60px;height:3px;background:linear-gradient(90deg,var(--green-500),var(--green-300));border-radius:2px;margin:18px 0 28px;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:100px;font-weight:600;font-size:.95rem;cursor:pointer;border:none;transition:var(--transition);text-decoration:none;font-family:'DM Sans',sans-serif;}
+.btn-primary{background:var(--green-600);color:white;box-shadow:0 4px 16px rgba(33,122,70,.35);}
+.btn-primary:hover{background:var(--green-700);transform:translateY(-2px);}
+.btn-white{background:white;color:var(--green-700);box-shadow:var(--shadow-md);}
+.btn-white:hover{background:var(--green-50);transform:translateY(-2px);}
+.btn-ghost-white{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.2);}
+.btn-ghost-white:hover{background:rgba(255,255,255,.18);}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:.1s;}
+.reveal-delay-2{transition-delay:.2s;}
+.reveal-delay-3{transition-delay:.3s;}
+
+/* HERO COLLECTIONS GRID */
+#overview{background:var(--off-white);}
+.overview-intro{text-align:center;max-width:600px;margin:0 auto 56px;}
+.overview-intro .section-title{margin-bottom:14px;}
+.overview-intro .divider{margin:16px auto 0;}
+.hero-coll-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:auto auto;gap:20px;}
+.hc-card{border-radius:var(--radius-lg);overflow:hidden;position:relative;cursor:pointer;transition:var(--transition);}
+.hc-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+.hc-card.large{grid-row:1/3;}
+.hc-card .hc-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+.hc-card:hover .hc-img{transform:scale(1.06);}
+.hc-card.large .hc-img{height:100%;min-height:460px;}
+.hc-card:not(.large) .hc-img{height:200px;}
+.hc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,46,26,.85) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:24px;}
+.hc-overlay .tag{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-300);margin-bottom:6px;}
+.hc-overlay h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:white;margin-bottom:5px;}
+.hc-card.large .hc-overlay h3{font-size:1.6rem;}
+.hc-overlay .count{font-size:.78rem;color:rgba(255,255,255,.6);font-weight:500;}
+
+/* DETAILED CARDS */
+#collections{background:var(--white);}
+.coll-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:48px;}
+.coll-card{background:var(--off-white);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--green-100);transition:var(--transition);}
+.coll-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--green-200);}
+.coll-card-img{width:100%;height:180px;object-fit:cover;transition:transform .4s ease;}
+.coll-card:hover .coll-card-img{transform:scale(1.04);}
+.coll-card-body{padding:24px;}
+.coll-icon-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.coll-icon{width:46px;height:46px;border-radius:11px;background:var(--green-200);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--green-700);transition:var(--transition);}
+.coll-card:hover .coll-icon{background:var(--green-600);color:white;}
+.coll-card h3{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--green-900);margin-bottom:8px;}
+.coll-card p{font-size:.88rem;color:var(--text-light);line-height:1.7;margin-bottom:16px;}
+.coll-meta{display:flex;align-items:center;justify-content:space-between;}
+.coll-count{background:var(--green-100);color:var(--green-700);font-size:.75rem;font-weight:700;padding:5px 14px;border-radius:100px;letter-spacing:.06em;}
+.coll-link{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;color:var(--green-600);transition:var(--transition);}
+.coll-card:hover .coll-link{gap:10px;}
+
+/* DIGITAL SPOTLIGHT */
+#digital{background:var(--green-900);}
+.dig-section-tag{background:rgba(61,191,112,.14);color:var(--green-300);}
+.dig-title{color:white;}
+.dig-subtitle{color:rgba(255,255,255,.6);}
+.dig-divider{background:linear-gradient(90deg,var(--green-400),rgba(61,191,112,.3));}
+.digital-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:48px;}
+.dig-card{background:rgba(255,255,255,.04);border:1px solid rgba(61,191,112,.14);border-radius:var(--radius-md);padding:28px 22px;text-align:center;transition:var(--transition);cursor:pointer;}
+.dig-card:hover{background:rgba(40,160,87,.14);border-color:rgba(61,191,112,.4);transform:translateY(-4px);}
+.dig-icon{width:60px;height:60px;border-radius:14px;background:rgba(61,191,112,.12);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--green-300);margin:0 auto 16px;transition:var(--transition);}
+.dig-card:hover .dig-icon{background:rgba(61,191,112,.24);color:var(--green-200);}
+.dig-card h4{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:white;margin-bottom:8px;}
+.dig-card p{font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:14px;}
+.dig-count{display:inline-block;background:rgba(61,191,112,.18);color:var(--green-300);font-size:.74rem;font-weight:700;padding:4px 14px;border-radius:100px;letter-spacing:.06em;}
+
+/* STATS BAND */
+.stats-band{background:linear-gradient(135deg,var(--green-700),var(--green-900));padding:64px 0;}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
+.s-stat strong{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:800;color:var(--green-300);display:block;line-height:1;}
+.s-stat span{font-size:.75rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-top:6px;display:block;}
+
+/* ACCESS SECTION */
+#access{background:var(--green-50);}
+.access-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.access-steps{margin-top:32px;}
+.step{display:flex;gap:18px;margin-bottom:28px;}
+.step-num{width:44px;height:44px;border-radius:50%;background:var(--green-600);color:white;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-body h4{font-weight:700;color:var(--green-900);margin-bottom:4px;}
+.step-body p{font-size:.88rem;color:var(--text-light);line-height:1.6;}
+.access-img{border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-lg);aspect-ratio:4/3;object-fit:cover;width:100%;}
+
+/* CTA */
+.coll-cta{background:var(--white);padding:80px 0;}
+.cta-card{background:linear-gradient(135deg,var(--green-700),var(--green-900));border-radius:var(--radius-xl);padding:64px 56px;display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.cta-card::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(61,191,112,.1);}
+.cta-card h3{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:white;margin-bottom:10px;}
+.cta-card p{color:rgba(255,255,255,.65);font-size:.95rem;max-width:420px;}
+.cta-btns{display:flex;gap:14px;flex-wrap:wrap;flex-shrink:0;}
+
+/* FOOTER */
+footer{background:var(--green-900);padding:36px 0 28px;}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+footer p{font-size:.82rem;color:rgba(255,255,255,.35);}
+footer a{color:var(--green-400);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:.82rem;color:rgba(255,255,255,.4);transition:var(--transition);}
+.footer-links a:hover{color:var(--green-300);}
+
+@media(max-width:900px){.hero-coll-grid{grid-template-columns:1fr 1fr;}.hc-card.large{grid-row:auto;grid-column:1/-1;}.stats-inner{grid-template-columns:1fr 1fr;}.access-grid{grid-template-columns:1fr;gap:40px;}}
+@media(max-width:768px){.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}.cta-card{flex-direction:column;text-align:center;padding:40px 28px;}}
+@media(max-width:480px){.hero-coll-grid{grid-template-columns:1fr;}.hc-card:not(.large) .hc-img{height:180px;}.stats-inner{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+      <div class="nav-logo-text"><strong>Sky-High Library</strong><span>Est. 2008 · Lagos</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="collection.html"class="active">Collection</a>
+      <a href="features.html">Features</a>
+      <a href="services.html">Service</a>
+      <a href="contact.hmtl">Contact</a>
+    </div>
+    <a href="sky-high-library.html#register" class="nav-cta"><i class="fa-solid fa-user-plus"></i> Classify your Book here</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#about">About</a>
+  <a href="#catalogue">Catalogue</a>
+  <a href="#collection">Collections</a>
+  <a href="#features">Features</a>
+  <a href="#service">Service</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><i class="fa-solid fa-chevron-right"></i><span>Collections</span>
+    </div>
+    <h1>Our <span>Collections</span></h1>
+    <p>Beyond books — explore research papers, journals, digital archives, multimedia, and rare historical materials curated for every scholar and curious mind.</p>
+  </div>
+</section>
+
+<!-- OVERVIEW — visual grid -->
+<section id="overview" class="section">
+  <div class="container">
+    <div class="overview-intro reveal">
+      <div class="section-tag"><i class="fa-solid fa-layer-group"></i> What We Offer</div>
+      <h2 class="section-title">A World Beyond Books</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">Our collections span physical and digital formats, covering every discipline from cutting-edge science to rare historical archives.</p>
+    </div>
+    <div class="hero-coll-grid reveal">
+      <div class="hc-card large">
+        <img class="hc-img" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=700&q=80" alt="Research"/>
+        <div class="hc-overlay">
+          <div class="tag">Flagship</div>
+          <h3>Research & Academic Papers</h3>
+          <div class="count">3,200+ peer-reviewed papers</div>
+        </div>
+      </div>
+      <div class="hc-card">
+        <img class="hc-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=500&q=75" alt="Journals"/>
+        <div class="hc-overlay">
+          <div class="tag">Academic</div>
+          <h3>Academic Journals</h3>
+          <div class="count">1,800+ issues</div>
+        </div>
+      </div>
+      <div class="hc-card">
+        <img class="hc-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&q=75" alt="Magazines"/>
+        <div class="hc-overlay">
+          <div class="tag">Periodicals</div>
+          <h3>Magazines</h3>
+          <div class="count">450+ titles</div>
+        </div>
+      </div>
+      <div class="hc-card">
+        <img class="hc-img" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=75" alt="Digital"/>
+        <div class="hc-overlay">
+          <div class="tag">Digital</div>
+          <h3>Digital Resources</h3>
+          <div class="count">8,500+ items</div>
+        </div>
+      </div>
+      <div class="hc-card">
+        <img class="hc-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=75" alt="Archives"/>
+        <div class="hc-overlay">
+          <div class="tag">Historical</div>
+          <h3>Maps & Archives</h3>
+          <div class="count">900+ items</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETAILED COLLECTION CARDS -->
+<section id="collections" class="section">
+  <div class="container">
+    <div class="reveal" style="max-width:560px;">
+      <div class="section-tag"><i class="fa-solid fa-folder-open"></i> Explore Collections</div>
+      <h2 class="section-title">Browse by Collection Type</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">Each collection is expertly curated, catalogued, and maintained to the highest archival standards.</p>
+    </div>
+    <div class="coll-grid">
+      <div class="coll-card reveal">
+        <img class="coll-card-img" src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500&q=75" alt="Research Papers"/>
+        <div class="coll-card-body">
+          <div class="coll-icon-row">
+            <div class="coll-icon"><i class="fa-solid fa-microscope"></i></div>
+          </div>
+          <h3>Research Papers</h3>
+          <p>Peer-reviewed academic papers spanning natural sciences, social sciences, engineering, humanities, and emerging interdisciplinary fields. Available in print and digital formats.</p>
+          <div class="coll-meta">
+            <span class="coll-count">3,200+ Papers</span>
+            <a href="sky-high-library.html#register" class="coll-link">Access <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="coll-card reveal reveal-delay-1">
+        <img class="coll-card-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&q=75" alt="Magazines"/>
+        <div class="coll-card-body">
+          <div class="coll-icon-row">
+            <div class="coll-icon"><i class="fa-solid fa-newspaper"></i></div>
+          </div>
+          <h3>Magazines</h3>
+          <p>Current and back-issue collections of leading local and international magazines spanning technology, business, culture, health, science, and current affairs.</p>
+          <div class="coll-meta">
+            <span class="coll-count">450+ Titles</span>
+            <a href="sky-high-library.html#register" class="coll-link">Browse <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="coll-card reveal reveal-delay-2">
+        <img class="coll-card-img" src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=500&q=75" alt="Academic Journals"/>
+        <div class="coll-card-body">
+          <div class="coll-icon-row">
+            <div class="coll-icon"><i class="fa-solid fa-scroll"></i></div>
+          </div>
+          <h3>Academic Journals</h3>
+          <p>Active subscriptions to leading international academic journals across all major disciplines, with complete back-issue archives dating to the 1970s.</p>
+          <div class="coll-meta">
+            <span class="coll-count">1,800+ Issues</span>
+            <a href="sky-high-library.html#register" class="coll-link">Explore <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="coll-card reveal">
+        <img class="coll-card-img" src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=500&q=75" alt="Digital Resources"/>
+        <div class="coll-card-body">
+          <div class="coll-icon-row">
+            <div class="coll-icon"><i class="fa-solid fa-tablet-screen-button"></i></div>
+          </div>
+          <h3>Digital Resources</h3>
+          <p>E-books, audiobooks, and curated online database subscriptions accessible 24/7 from any device. Includes JSTOR, Oxford Reference, and African Journals Online.</p>
+          <div class="coll-meta">
+            <span class="coll-count">8,500+ Items</span>
+            <a href="sky-high-library.html#register" class="coll-link">Access 24/7 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="coll-card reveal reveal-delay-1">
+        <img class="coll-card-img" src="https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=500&q=75" alt="Multimedia"/>
+        <div class="coll-card-body">
+          <div class="coll-icon-row">
+            <div class="coll-icon"><i class="fa-solid fa-film"></i></div>
+          </div>
+          <h3>Multimedia</h3>
+          <p>Educational DVDs, documentary films, lecture series recordings, and multimedia learning resources covering history, science, arts, and culture.</p>
+          <div class="coll-meta">
+            <span class="coll-count">600+ Titles</span>
+            <a href="sky-high-library.html#register" class="coll-link">View Titles <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="coll-card reveal reveal-delay-2">
+        <img class="coll-card-img" src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=500&q=75" alt="Maps"/>
+        <div class="coll-card-body">
+          <div class="coll-icon-row">
+            <div class="coll-icon"><i class="fa-solid fa-map"></i></div>
+          </div>
+          <h3>Maps & Archives</h3>
+          <p>A rare collection of historical maps of West Africa, Lagos, and Nigeria from the colonial era to present day, plus government records, census data, and oral history transcriptions.</p>
+          <div class="coll-meta">
+            <span class="coll-count">900+ Items</span>
+            <a href="sky-high-library.html#contact" class="coll-link">Request Access <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIGITAL SPOTLIGHT -->
+<section id="digital" class="section">
+  <div class="container">
+    <div class="reveal" style="max-width:560px;">
+      <div class="section-tag dig-section-tag"><i class="fa-solid fa-cloud"></i> Digital Collections</div>
+      <h2 class="section-title dig-title">Always On, Always Accessible</h2>
+      <div class="divider dig-divider"></div>
+      <p class="section-subtitle dig-subtitle">Our digital platform gives registered members round-the-clock access to thousands of resources from anywhere in the world.</p>
+    </div>
+    <div class="digital-grid">
+      <div class="dig-card reveal">
+        <div class="dig-icon"><i class="fa-solid fa-book"></i></div>
+        <h4>E-Books</h4>
+        <p>Thousands of titles readable on any device, downloadable for offline use by registered members.</p>
+        <span class="dig-count">4,200+ Titles</span>
+      </div>
+      <div class="dig-card reveal reveal-delay-1">
+        <div class="dig-icon"><i class="fa-solid fa-headphones"></i></div>
+        <h4>Audiobooks</h4>
+        <p>Narrated by professional readers. Perfect for commuters and people who love to listen while on the move.</p>
+        <span class="dig-count">1,100+ Titles</span>
+      </div>
+      <div class="dig-card reveal reveal-delay-2">
+        <div class="dig-icon"><i class="fa-solid fa-database"></i></div>
+        <h4>Online Databases</h4>
+        <p>Access to JSTOR, Oxford Reference, African Journals Online, and more through our member portal.</p>
+        <span class="dig-count">6 Databases</span>
+      </div>
+      <div class="dig-card reveal">
+        <div class="dig-icon"><i class="fa-solid fa-chalkboard"></i></div>
+        <h4>Video Lectures</h4>
+        <p>Curated lecture series from universities and institutions across Africa, Europe, and the Americas.</p>
+        <span class="dig-count">800+ Lectures</span>
+      </div>
+      <div class="dig-card reveal reveal-delay-1">
+        <div class="dig-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <h4>Research Reports</h4>
+        <p>Institutional, governmental, and NGO research reports on African development, policy, and society.</p>
+        <span class="dig-count">2,400+ Reports</span>
+      </div>
+      <div class="dig-card reveal reveal-delay-2">
+        <div class="dig-icon"><i class="fa-solid fa-language"></i></div>
+        <h4>Multilingual Resources</h4>
+        <p>Resources in English, Yoruba, Igbo, Hausa, French, and other African languages.</p>
+        <span class="dig-count">12 Languages</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band reveal">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="s-stat"><strong>14,900+</strong><span>Total Collection Items</span></div>
+      <div class="s-stat"><strong>8,500+</strong><span>Digital Resources</span></div>
+      <div class="s-stat"><strong>900+</strong><span>Rare Archive Items</span></div>
+      <div class="s-stat"><strong>24/7</strong><span>Digital Access</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCESS STEPS -->
+<section id="access" class="section">
+  <div class="container">
+    <div class="access-grid">
+      <div class="reveal">
+        <div class="section-tag"><i class="fa-solid fa-key"></i> How to Access</div>
+        <h2 class="section-title">Getting Started Is Simple</h2>
+        <div class="divider"></div>
+        <div class="access-steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Register for Free</h4>
+              <p>Create your member account online in under 2 minutes. No fees, no waiting.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Verify Your Account</h4>
+              <p>Confirm your email and collect your physical membership card from the front desk.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Access All Collections</h4>
+              <p>Browse, borrow, and access all physical and digital collections instantly.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Need Help? Ask a Librarian</h4>
+              <p>Our expert staff are on hand to guide research, locate resources, and assist with any query.</p>
+            </div>
+          </div>
+        </div>
+        <a href="sky-high-library.html#register" class="btn btn-primary" style="margin-top:12px;"><i class="fa-solid fa-rocket"></i> Create Free Account</a>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <img class="access-img" src="https://images.unsplash.com/photo-1568667256549-094345857637?w=700&q=80" alt="Library access"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="coll-cta">
+  <div class="container">
+    <div class="cta-card reveal">
+      <div>
+        <h3>Ready to Explore Our Collections?</h3>
+        <p>Become a free member today and unlock access to all our physical and digital collections.</p>
+      </div>
+      <div class="cta-btns">
+        <a href="sky-high-library.html#register" class="btn btn-white"><i class="fa-solid fa-user-plus"></i> Join Free</a>
+        <a href="catalogue.html" class="btn btn-ghost-white"><i class="fa-solid fa-books"></i> Browse Catalogue</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <p>© 2025 <a href="index.html">Sky-High Library</a>. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="catalogue.html">Catalogue</a><a href="sky-high-library.html#contact">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
+const hb=document.getElementById('hamburger'),mn=document.getElementById('mobile-nav');
+hb.addEventListener('click',()=>{hb.classList.toggle('open');mn.classList.toggle('visible');});
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
